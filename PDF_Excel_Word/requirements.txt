@@ -19,7 +19,7 @@ jdcal==1.4.1
 Jinja2==2.11.2
 lxml==4.6.2
 MarkupSafe==1.1.1
-openpyxl==3.0.5
+openpyxl==3.0.7
 pipenv==2020.11.15
 PyPDF2==1.26.0
 pyperclip==1.8.2
