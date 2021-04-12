@@ -22,7 +22,7 @@ MarkupSafe==1.1.1
 openpyxl==3.0.5
 pipenv==2020.11.15
 PyPDF2==1.26.0
-pyperclip==1.8.1
+pyperclip==1.8.2
 pypiwin32==223
 python-docx==0.8.10
 pyttsx3==2.90
