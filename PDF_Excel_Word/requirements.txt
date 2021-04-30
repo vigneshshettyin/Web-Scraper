@@ -3,7 +3,7 @@ beautifulsoup4==4.9.3
 certifi==2020.12.5
 chardet==4.0.0
 click==7.1.2
-comtypes==1.1.9
+comtypes==1.1.10
 distlib==0.3.1
 docx2pdf==0.1.7
 et-xmlfile==1.1.0
