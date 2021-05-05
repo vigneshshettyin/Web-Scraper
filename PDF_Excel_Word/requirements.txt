@@ -28,7 +28,7 @@ python-docx==0.8.10
 pyttsx3==2.90
 pywin32==300
 requests==2.25.0
-six==1.15.0
+six==1.16.0
 soupsieve==2.2.1
 SQLAlchemy==1.4.12
 sty==1.0.0rc1
