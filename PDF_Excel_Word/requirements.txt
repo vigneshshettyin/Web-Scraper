@@ -14,7 +14,7 @@ flask-ngrok==0.0.25
 Flask-SQLAlchemy==2.5.1
 gunicorn==20.0.4
 idna==2.10
-itsdangerous==1.1.0
+itsdangerous==2.0.0
 jdcal==1.4.1
 Jinja2==2.11.2
 lxml==4.6.3
