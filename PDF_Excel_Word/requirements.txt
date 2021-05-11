@@ -37,4 +37,4 @@ tqdm==4.60.0
 urllib3==1.26.2
 virtualenv==20.4.6
 virtualenv-clone==0.5.4
-Werkzeug==1.0.1
+Werkzeug==2.0.0
