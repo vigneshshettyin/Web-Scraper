@@ -18,7 +18,7 @@ itsdangerous==1.1.0
 jdcal==1.4.1
 Jinja2==2.11.2
 lxml==4.6.3
-MarkupSafe==1.1.1
+MarkupSafe==2.0.0
 openpyxl==3.0.5
 pipenv==2020.11.15
 PyPDF2==1.26.0
