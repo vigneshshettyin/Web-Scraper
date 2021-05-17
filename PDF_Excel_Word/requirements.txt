@@ -24,7 +24,7 @@ pipenv==2020.11.15
 PyPDF2==1.26.0
 pyperclip==1.8.2
 pypiwin32==223
-python-docx==0.8.10
+python-docx==0.8.11
 pyttsx3==2.90
 pywin32==300
 requests==2.25.0
