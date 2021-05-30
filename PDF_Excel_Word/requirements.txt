@@ -20,7 +20,7 @@ Jinja2==2.11.2
 lxml==4.6.3
 MarkupSafe==1.1.1
 openpyxl==3.0.5
-pipenv==2020.11.15
+pipenv==2021.5.29
 PyPDF2==1.26.0
 pyperclip==1.8.2
 pypiwin32==223
@@ -30,10 +30,10 @@ pywin32==300
 requests==2.25.0
 six==1.16.0
 soupsieve==2.2.1
-SQLAlchemy==1.4.14
+SQLAlchemy==1.4.16
 sty==1.0.0rc1
 termcolor==1.1.0
-tqdm==4.60.0
+tqdm==4.61.0
 urllib3==1.26.2
 virtualenv==20.4.6
 virtualenv-clone==0.5.4
