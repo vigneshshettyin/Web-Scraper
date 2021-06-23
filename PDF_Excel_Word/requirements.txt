@@ -30,7 +30,7 @@ pywin32==301
 requests==2.25.0
 six==1.16.0
 soupsieve==2.2.1
-SQLAlchemy==1.4.18
+SQLAlchemy==1.4.19
 sty==1.0.0rc1
 termcolor==1.1.0
 tqdm==4.61.1
