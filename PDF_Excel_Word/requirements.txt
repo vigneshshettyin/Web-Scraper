@@ -33,7 +33,7 @@ soupsieve==2.2.1
 SQLAlchemy==1.4.22
 sty==1.0.0rc1
 termcolor==1.1.0
-tqdm==4.61.2
+tqdm==4.62.0
 urllib3==1.26.2
 virtualenv==20.5.0
 virtualenv-clone==0.5.5
