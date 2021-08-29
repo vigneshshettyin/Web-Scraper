@@ -10,67 +10,13 @@ app = Flask(__name__)
 
 @app.route("/", methods = ['GET', 'POST'])
 def home_page():
-    # ip_address = "43.247.157.20"; # ip initialized for testing
-    # TODO: Comment above line when website is live on web
-    ip_address = request.environ['HTTP_X_FORWARDED_FOR']  # get's client ip address
-    try:
-
-        response = rq.get("http://ip-api.com/json/{}".format(ip_address)) # requests to get user client info
-
-    except:
-        return 'Error!'
-
-    if response.status_code == 200:
-        if (ip_address == "127.0.0.1"):
-            return 'Error!'
-        else:
-            js = response.json()
-            state = js['regionName'] # user clients state is obtained
-        # print(state)
+    if(request.method=='POST'): #on POST request
+        url=request.form.get('url') #url is obtained from form
+        url = url.replace("/", "*") # '/' is replaced by * in url
+        return redirect('/api/'+url) # redirect to api
     else:
-        return 'Error!'
-    try:
+        return render_template('index.html' )
 
-        res = rq.get("https://api.rootnet.in/covid19-in/stats/latest")# requests to get user covid 19 status info from api in json format
-
-    except:
-
-        return 'Error!'
-
-    if res.status_code == 200:
-
-        covid = res.json() # json data assigned to variable covid
-
-        if(state=='Karnataka'): # match with json data
-            status=15
-        elif(state=='Kerala'):
-            status=16
-        elif(state=='Maharashtra'):
-            status=20
-        elif(state=='Andhra Pradesh'):
-            status=1
-
-        loc = covid['data']['regional'][status]['loc'] # state name
-
-        confirmedCasesIndian = covid['data']['regional'][status]['confirmedCasesIndian'] #confirmedCasesIndian
-
-        discharged = covid['data']['regional'][status]['discharged'] #discharged
-
-        deaths = covid['data']['regional'][status]['deaths'] #deaths
-
-        totalConfirmed = covid['data']['regional'][status]['totalConfirmed'] #totalConfirmed
-
-        # print(loc,confirmedCasesIndian, discharged, deaths, totalConfirmed)
-        if(request.method=='POST'): #on POST request
-
-            url=request.form.get('url') #url is obtained from form
-            # print(url)
-            url = url.replace("/", "*") # '/' is replaced by * in url
-
-            return redirect('/api/'+url) # redirect to api
-    else:
-        return 'Error'
-    return render_template('index.html', state=loc,confirmedCasesIndian=confirmedCasesIndian,discharged=discharged, deaths=deaths, totalConfirmed=totalConfirmed )
 
 @app.route("/api/<string:url>", methods = ['GET', 'POST'])
 def geturl(url):
@@ -227,7 +173,7 @@ def geturl(url):
             urlDict["hosting_info"]["postal_code"] = df[1][10]
         else:
             return 'Error!'
-        return json.dumps(urlDict)
+        return jsonify(urlDict)
     else:
         return 'Error!'
 
