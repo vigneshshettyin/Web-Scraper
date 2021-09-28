@@ -14,11 +14,13 @@ html {
  */
 body {
   margin: 0;
+  padding: 0;
   background-color: white;
   background-image: url("//source.unsplash.com/1920x1080/?coding,webscraping");
   background-repeat: no-repeat;
   background-size: cover;
   height: 100vh;
+  width: 100vw;
 }
 
 /**
@@ -500,21 +502,6 @@ legend {
   margin: 0;
 }
 
-.choices[data-type*="select-one"] .choices__button {
-  background-image: url("../../icons/cross-inverse.svg");
-  padding: 0;
-  background-size: 8px;
-  height: 100%;
-  position: absolute;
-  top: 50%;
-  right: 0;
-  margin-top: -10px;
-  margin-right: 25px;
-  height: 20px;
-  width: 20px;
-  border-radius: 10em;
-  opacity: .5;
-}
 
 .choices[data-type*="select-one"] .choices__button:hover, .choices[data-type*="select-one"] .choices__button:focus {
   opacity: 1;
@@ -557,22 +544,6 @@ legend {
 
 .choices[data-type*="select-multiple"] .choices__inner, .choices[data-type*="text"] .choices__inner {
   cursor: text;
-}
-
-.choices[data-type*="select-multiple"] .choices__button, .choices[data-type*="text"] .choices__button {
-  position: relative;
-  display: inline-block;
-  margin-top: 0;
-  margin-right: -4px;
-  margin-bottom: 0;
-  margin-left: 8px;
-  padding-left: 16px;
-  border-left: 1px solid #008fa1;
-  background-image: url("../../icons/cross.svg");
-  background-size: 8px;
-  width: 8px;
-  line-height: 1;
-  opacity: .75;
 }
 
 .choices[data-type*="select-multiple"] .choices__button:hover, .choices[data-type*="select-multiple"] .choices__button:focus, .choices[data-type*="text"] .choices__button:hover, .choices[data-type*="text"] .choices__button:focus {
