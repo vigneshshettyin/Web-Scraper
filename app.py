@@ -124,9 +124,9 @@ def geturl(url):
 
 #         else:
 #             return 'Error!'
-#         return jsonify(urlDict)
-#     else:
-#         return 'Error!'
+        return jsonify(urlDict)
+    else:
+        return 'Error!'
 
 
 if __name__ == '__main__':
