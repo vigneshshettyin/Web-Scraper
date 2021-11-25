@@ -110,72 +110,23 @@ def geturl(url):
 
         urlDict["data_recived_at"] = str(datetime.now()) #current datatime of the server is obatined using datatime module
 
-        try:
+#         try:
 
-            req = rq.get('https://check-host.net/ip-info?host=' + url) #request to get info on host or domain
+#             req = rq.get('https://ipapi.co/43.247.157.20/json' + url) #request to get info on host or domain
 
-        except:
+#         except:
 
-            return 'Error!'
-        # print(res.text)
-        if res.status_code == 200:
+#             return 'Error!'
+#         # print(res.text)
+#         if res.status_code == 200:
 
-            soup = bs4.BeautifulSoup(req.text, 'lxml') #soup object is created
+#             urlDict["hosting_info"] = {}  #initialize dictionary of dictionary
 
-            table = soup.find('table', attrs={'class': 'hostinfo result'}) #find all with class='hostinfo result'
-            table_rows = table.find_all('tr')
-
-            # for tr in table_rows:
-            #     td = tr.find_all('td')
-            #     row = [tr.text for tr in td]
-            #     print(row)
-
-            l = [] #initialize list
-            for tr in table_rows:
-                td = tr.find_all('td')
-                row = [tr.text for tr in td]
-                l.append(row) #appending to list
-
-            # df = pd.DataFrame(l)
-
-            # df = l.replace('\n','', regex=True)
-
-            df = pd.DataFrame(l) #converting list to dataframe
-
-            df = df.replace('\n', '', regex=True) #data cleaning removal of newline characters
-
-            df.drop(df.columns[[0]], axis=1, inplace=True) #droping column 0 of the dataframe df
-
-            # print(df)
-
-            urlDict["hosting_info"] = {}  #initialize dictionary of dictionary
-
-            urlDict["hosting_info"]["host_ip"] = df[1][0]
-
-            urlDict["hosting_info"]["host_dns"] = df[1][1]
-
-            urlDict["hosting_info"]["host_ip_range"] = df[1][2]
-
-            urlDict["hosting_info"]["isp"] = df[1][3]
-
-            urlDict["hosting_info"]["hosting_provider"] = df[1][4]
-
-            urlDict["hosting_info"]["country"] = df[1][5]
-
-            urlDict["hosting_info"]["region"] = df[1][6]
-
-            urlDict["hosting_info"]["city"] = df[1][7]
-
-            urlDict["hosting_info"]["time_zone"] = df[1][8]
-
-            urlDict["hosting_info"]["local_time"] = df[1][9]
-
-            urlDict["hosting_info"]["postal_code"] = df[1][10]
-        else:
-            return 'Error!'
-        return jsonify(urlDict)
-    else:
-        return 'Error!'
+#         else:
+#             return 'Error!'
+#         return jsonify(urlDict)
+#     else:
+#         return 'Error!'
 
 
 if __name__ == '__main__':
