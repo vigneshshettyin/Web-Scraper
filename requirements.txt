@@ -1,7 +1,7 @@
 beautifulsoup4==4.10.0
 bs4==0.0.1
 certifi==2021.5.30
-chardet==4.0.0
+chardet==5.0.0
 click==7.1.2
 Flask==2.0.3
 idna==3.1
