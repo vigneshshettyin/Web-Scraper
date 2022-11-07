@@ -22,13 +22,14 @@ def home_page():
 def geturl(url):
     urlDict= {} #initialize dictionary
     url = url.replace("*", "/") #replace '*' by '/' in url
+    if(url.startswith('http://')):
+        url = url[7:]
+    elif(url.startswith('https://')):
+        url = url[8:]
     url ='https://'+str(url) #'https://' in concatenated with the url
     try:
-
         res = rq.get(url) #requesting url
-
     except:
-
         return 'Error!'
 
     if res.status_code == 200:
@@ -110,24 +111,22 @@ def geturl(url):
 
         urlDict["data_recived_at"] = str(datetime.now()) #current datatime of the server is obatined using datatime module
 
-#         try:
-
-#             req = rq.get('https://ipapi.co/43.247.157.20/json' + url) #request to get info on host or domain
-
-#         except:
-
-#             return 'Error!'
-#         # print(res.text)
-#         if res.status_code == 200:
-
-#             urlDict["hosting_info"] = {}  #initialize dictionary of dictionary
-
-#         else:
-#             return 'Error!'
+        user_ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+        # user_ip = "24.48.0.1"
+        user_agent_json = json.loads(json.dumps(request.headers.get('User-Agent')))
+        # get network location of the user
+        url = 'http://ip-api.com/json/' + user_ip
+        try:
+            res = rq.get(url)
+        except Exception as e:
+            print(e)
+        if res.status_code == 200:
+            data = json.loads(res.text)
+            urlDict["network_data"] = data
+            urlDict["network_data"]["user_agent"] = user_agent_json
         return jsonify(urlDict)
     else:
         return 'Error!'
-
 
 if __name__ == '__main__':
     app.run(debug=True)
