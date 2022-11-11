@@ -8,6 +8,11 @@ from datetime import datetime # To get current server time
 
 app = Flask(__name__)
 
+def get_domain_name(link):
+    from urllib.parse import urlparse
+    return urlparse(link).netloc
+
+
 @app.route("/", methods = ['GET', 'POST'])
 def home_page():
     if(request.method=='POST'): #on POST request
@@ -111,11 +116,11 @@ def geturl(url):
 
         urlDict["data_recived_at"] = str(datetime.now()) #current datatime of the server is obatined using datatime module
 
-        user_ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+        # user_ip = request.headers.get('X-Forwarded-For', request.remote_addr)
         # user_ip = "24.48.0.1"
-        user_agent_json = json.loads(json.dumps(request.headers.get('User-Agent')))
+        # user_agent_json = json.loads(json.dumps(request.headers.get('User-Agent')))
         # get network location of the user
-        url = 'http://ip-api.com/json/' + user_ip
+        url = 'http://ip-api.com/json/' + get_domain_name(url)
         try:
             res = rq.get(url)
         except Exception as e:
@@ -123,7 +128,7 @@ def geturl(url):
         if res.status_code == 200:
             data = json.loads(res.text)
             urlDict["network_data"] = data
-            urlDict["network_data"]["user_agent"] = user_agent_json
+            urlDict["network_data"]["user_agent"] = {}
         return jsonify(urlDict)
     else:
         return 'Error!'
