@@ -86,22 +86,25 @@ class DataScrapingService:
         data = {}
         image_count = 1
 
-        for link in soup.find_all('img'):
-            if '/' in link['src'][0]:
-                if '/' in link['src'][1]:
-                    var2 = 'img-' + str(image_count)
-                    data[var2] = 'https:'+link['src']
-                    image_count += 1
+        try:
+            for link in soup.find_all('img'):
+                if '/' in link['src'][0]:
+                    if '/' in link['src'][1]:
+                        var2 = 'img-' + str(image_count)
+                        data[var2] = 'https:'+link['src']
+                        image_count += 1
 
-            if '/' in link['src'][0]:
-                if '/' not in link['src'][1]:
+                if '/' in link['src'][0]:
+                    if '/' not in link['src'][1]:
+                        var2 = 'img-' + str(image_count)
+                        data[var2] = str(url) + link['src']
+                        image_count += 1
+                else:
                     var2 = 'img-' + str(image_count)
-                    data[var2] = str(url) + link['src']
+                    data[var2] = link['src']
                     image_count += 1
-            else:
-                var2 = 'img-' + str(image_count)
-                data[var2] = link['src']
-                image_count += 1
+        except KeyError:
+            pass
 
         return data if data else {}
 
