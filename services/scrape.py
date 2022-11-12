@@ -51,10 +51,14 @@ class DataScrapingService:
         '''
         available_tags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p']
 
+        null_values = ['null', 'Null', 'NULL', 'none',
+                       'None', 'NONE', 'nil', 'Nil', 'NIL', '']
+
         data = {}
 
         for tag in available_tags:
-            data[tag] = [tag_data.text for tag_data in soup.find_all(tag)]
+            data[tag] = [tag_data.text.strip()
+                         for tag_data in soup.find_all(tag) if tag_data.text.strip() not in null_values]
         return data if data else {}
 
     def get_links(self, soup, url):
