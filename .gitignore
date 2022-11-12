@@ -105,7 +105,7 @@ celerybeat.pid
 .env
 .venv
 env/
-tutorial-env/
+flask-env
 venv/
 ENV/
 env.bak/

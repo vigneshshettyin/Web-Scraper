@@ -1,137 +1,57 @@
-# run pip install -r requirements.txt in terminal
-from flask import Flask, jsonify,  render_template, request, redirect # Import Framework
-import requests as rq # Import requests module to request any site
-import bs4 # Web Scraping module
-import json # To read json data
-import pandas as pd # To work on dataframe
-from datetime import datetime # To get current server time
+'''
+Source code for the Flask app
+'''
+
+import datetime
+from flask import Flask, jsonify,  render_template, request, redirect
+from services.network import NetworkService
+from services.scrape import DataScrapingService
 
 app = Flask(__name__)
 
-def get_domain_name(link):
-    from urllib.parse import urlparse
-    return urlparse(link).netloc
 
-
-@app.route("/", methods = ['GET', 'POST'])
+@app.route("/", methods=['GET', 'POST'])
 def home_page():
-    if(request.method=='POST'): #on POST request
-        url=request.form.get('url') #url is obtained from form
-        url = url.replace("/", "*") # '/' is replaced by * in url
-        return redirect('/api/'+url) # redirect to api
+    '''
+    This function returns the home page
+    '''
+
+    if (request.method == 'POST'):
+        url = request.form.get('url').strip()
+        url_star = url.replace("/", "*")
+        return redirect('/api/'+url_star)
     else:
-        return render_template('index.html' )
+        return render_template('index.html')
 
 
-@app.route("/api/<string:url>", methods = ['GET', 'POST'])
+@app.route("/api/<string:url>", methods=['GET', 'POST'])
 def geturl(url):
-    urlDict= {} #initialize dictionary
-    url = url.replace("*", "/") #replace '*' by '/' in url
-    if(url.startswith('http://')):
+    '''
+    This function returns the data from the url
+    '''
+
+    data = {}
+
+    url = url.replace("*", "/")
+
+    if (url.startswith('http://')):
         url = url[7:]
-    elif(url.startswith('https://')):
+
+    elif (url.startswith('https://')):
         url = url[8:]
-    url ='https://'+str(url) #'https://' in concatenated with the url
-    try:
-        res = rq.get(url) #requesting url
-    except:
-        return 'Error!'
 
-    if res.status_code == 200:
-        # print(type(res))
-        urlDict["status"] = "success"
-        urlDict["url"]= url
-        soup = bs4.BeautifulSoup(res.text, 'lxml') #Parser
-        # Advantages of using lxml it's Very fast & Lenient
-        # print(type(soup))
-        # <class 'bs4.element.Tag'>
-        title = soup.select('title') #selcting titile tag
-        urlDict["title"] = title[0].getText() #text of title tag is obtained
-        a = url
-        count = 1
-        urlDict["links"] = {} #initialize dictionary of dictionary
+    url = 'https://'+str(url)
 
-        for link in soup.find_all('a', href=True):
-            if '#' in link['href']: # case 1 when when link is '#'
-                continue  # Even pass can be used
-            elif '/' in link['href'][0]: # case 2 where link is without root url
-                c = a + link['href']
-                variable = 'link-' + str(count)
-                count = count + 1
-                urlDict["links"][variable] = str(c) + link['href']
-            else:
-                variable = 'link-' + str(count) # else part
-                count = count + 1
-                urlDict["links"][variable] = link['href']
+    data_scraping_service = DataScrapingService()
+    data = data_scraping_service.get_data(url)
 
-        urlDict["seo"] = {} #initialize dictionary of dictionary
+    network_service = NetworkService()
+    data["network"] = network_service.get_data(url)
 
-        for c1 in soup.find_all('meta', content=True, property="og:locale"): #find all meta tag with property='og:locale'
-            urlDict["seo"]["language"] = c1['content']
+    data["data_scraped_at"] = datetime.datetime.now()
 
-        for c2 in soup.find_all('meta', content=True, property="og:type"): #find all meta tag with property='og:type'
-            urlDict["seo"]["type"] = c2['content']
+    return jsonify(data)
 
-        for c7 in soup.find_all('meta', content=True, property="og:site_name"): #find all meta tag with property='og:site_name'
-            urlDict["seo"]["site_name"] = c7['content']
-
-        for c5 in soup.find_all('meta', content=True, property="og:url"): #find all meta tag with property='og:url'
-            urlDict["seo"]["site_url"] = c5['content']
-
-        for c4 in soup.find_all('meta', content=True, property="og:title"):#find all meta tag with property='og:title'
-            urlDict["seo"]["site_title"] = c4['content']
-
-        for c3 in soup.find_all('meta', content=True, property="og:description"): #find all meta tag with property='og:description'
-            urlDict["seo"]["site_description"] = c3['content']
-
-        for c6 in soup.find_all('meta', content=True, property="article:modified_time"): #find all meta tag with property='article:modified_time'
-            urlDict["seo"]["last_modified_time"] = c6['content']
-
-        urlDict["img"] = {} #initialize dictionary of dictionary
-
-        countimg = 1
-
-        for link in soup.find_all('img'):
-            if '/' in link['src'][0]:
-                if '/' in link['src'][1]:
-                    var2 = 'img-' + str(countimg)
-                    urlDict["img"][var2] = 'https:'+link['src']
-                    countimg = countimg + 1
-
-            if '/' in link['src'][0]:
-                if '/' not in link['src'][1]:
-                    var2 = 'img-' + str(countimg)
-                    urlDict["img"][var2] = str(url) + link['src']
-                    countimg = countimg + 1
-            else:
-                var2 = 'img-' + str(countimg)
-                urlDict["img"][var2] = link['src']
-                countimg = countimg + 1
-        urlDict["para_tag"]={}
-        pcount=1
-
-        for i in soup.find_all('p'): #find all para tag
-            variable = 'ptag-'+str(pcount)
-            urlDict["para_tag"][variable] = i.getText().strip('\n') #data cleaning removal of newline characters
-
-        urlDict["data_recived_at"] = str(datetime.now()) #current datatime of the server is obatined using datatime module
-
-        # user_ip = request.headers.get('X-Forwarded-For', request.remote_addr)
-        # user_ip = "24.48.0.1"
-        # user_agent_json = json.loads(json.dumps(request.headers.get('User-Agent')))
-        # get network location of the user
-        url = 'http://ip-api.com/json/' + get_domain_name(url)
-        try:
-            res = rq.get(url)
-        except Exception as e:
-            print(e)
-        if res.status_code == 200:
-            data = json.loads(res.text)
-            urlDict["network_data"] = data
-            urlDict["network_data"]["user_agent"] = {}
-        return jsonify(urlDict)
-    else:
-        return 'Error!'
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
