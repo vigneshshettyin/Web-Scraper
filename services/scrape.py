@@ -1,8 +1,11 @@
 '''
 Data scraping service which scrapes the data from the url
 '''
-from bs4 import BeautifulSoup
 import requests
+from bs4 import BeautifulSoup
+from services.network import NetworkService
+
+network_service = NetworkService()
 
 
 class DataScrapingService:
@@ -67,19 +70,22 @@ class DataScrapingService:
         '''
         data = {}
         link_count = 1
-
-        for link in soup.find_all('a', href=True):
-            if '#' in link['href']:
-                continue
-            elif '/' in link['href'][0]:
-                c_url = url + link['href']
-                variable = 'link-' + str(link_count)
-                link_count += 1
-                data[variable] = str(c_url) + link['href']
-            else:
-                variable = 'link-' + str(link_count)
-                link_count += 1
-                data[variable] = link['href']
+        url = url = 'https://' + network_service.get_domain_name(url)
+        try:
+            for link in soup.find_all('a', href=True):
+                if '#' in link['href']:
+                    continue
+                elif '/' in link['href'][0]:
+                    c_url = url + link['href']
+                    variable = 'link-' + str(link_count)
+                    link_count += 1
+                    data[variable] = str(c_url) + link['href']
+                else:
+                    variable = 'link-' + str(link_count)
+                    link_count += 1
+                    data[variable] = link['href']
+        except Exception:
+            pass
 
         return data if data else {}
 
@@ -89,7 +95,7 @@ class DataScrapingService:
         '''
         data = {}
         image_count = 1
-
+        url = 'https://' + network_service.get_domain_name(url)
         try:
             for link in soup.find_all('img'):
                 if '/' in link['src'][0]:
