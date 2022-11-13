@@ -4,43 +4,38 @@ Source code for the Flask app
 
 import datetime
 from flask import Flask, jsonify,  render_template, request, redirect
-from services.network import NetworkService
+from services.urls import UrlValidators
 from services.scrape import DataScrapingService
+from services.network import NetworkService
 
 app = Flask(__name__)
 
+url_validator = UrlValidators()
 
-@app.route("/", methods=['GET', 'POST'])
+
+@app.route('/', methods=['GET', 'POST'])
 def home_page():
     '''
     This function returns the home page
     '''
 
     if (request.method == 'POST'):
-        url = request.form.get('url').strip()
-        url_star = url.replace("/", "*")
-        return redirect('/api/'+url_star)
+        url = url_validator.clean_url(request.form.get('url'))
+        if not url_validator.validate_url(url):
+            return render_template('index.html', error='Invalid URL!')
+        return redirect('/v1/scrape?url=' + url)
     else:
         return render_template('index.html')
 
 
-@app.route("/api/<string:url>", methods=['GET', 'POST'])
-def geturl(url):
+@app.route("/v1/scrape", methods=['GET'])
+def scrape_data():
     '''
     This function returns the data from the url
     '''
-
-    data = {}
-
-    url = url.replace("*", "/")
-
-    if (url.startswith('http://')):
-        url = url[7:]
-
-    elif (url.startswith('https://')):
-        url = url[8:]
-
-    url = 'https://'+str(url)
+    url = url_validator.clean_url(request.args.get('url'))
+    if not (url_validator.validate_url(url)):
+        return jsonify({'error': 'Invalid URL!'}), 400
 
     data_scraping_service = DataScrapingService()
     data = data_scraping_service.get_data(url)
@@ -50,8 +45,8 @@ def geturl(url):
 
     data["data_scraped_at"] = datetime.datetime.now()
 
-    return jsonify(data)
+    return jsonify(data), 200
 
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=True)
