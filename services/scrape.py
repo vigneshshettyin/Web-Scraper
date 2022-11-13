@@ -143,5 +143,6 @@ class DataScrapingService:
         '''
         return {
             'status': 'error',
-            'message': 'Error in getting network information'
+            'message': 'Error in scraping the data',
+
         }
