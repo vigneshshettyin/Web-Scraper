@@ -45,7 +45,8 @@ class NetworkService:
             response = requests.get(request_url, timeout=5)
             if response.status_code == 200:
                 bs4_soup = BeautifulSoup(response.text, 'lxml')
-                whois_data = bs4_soup.find('pre').text
+                whois_data = bs4_soup.find(
+                    'pre').text if bs4_soup.find('pre') else ''
                 whois_data = whois_data.splitlines()
                 whois_data = [x.split(':') for x in whois_data]
                 whois_data = [x for x in whois_data if len(
